@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Studio - Data Table</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+    <a class="logo" href="index.html">Studio</a>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="components.html">Components</a></li>
+            <li><a href="validation.html">Validation</a></li>
+            <li><a class="active" href="data.html" aria-current="page">Data Table</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="container page-content">
+
+    <section class="section">
+        <h1>People Data</h1>
+        <p>Search the table as you type or sort the people by name or age.</p>
+    </section>
+
+    <section class="section">
+
+        <div class="data-controls">
+            <label class="sr-only" for="searchInput">Search people</label>
+
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search by name, age, or city...">
+
+            <button class="btn" type="button" id="sortNameButton">
+                Sort by Name
+            </button>
+
+            <button class="btn" type="button" id="sortAgeButton">
+                Sort by Age
+            </button>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <caption>People information</caption>
+
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">City</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <p id="resultMessage" class="label" role="status" aria-live="polite"></p>
+
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <p>JavaScript Data Table</p>
+</footer>
+
+<script>
+    const people = [
+        { name: "Ahmed", age: 22, city: "Cairo" },
+        { name: "Mona", age: 25, city: "Alexandria" },
+        { name: "Omar", age: 19, city: "Giza" },
+        { name: "Sara", age: 21, city: "Cairo" },
+        { name: "Youssef", age: 28, city: "Mansoura" },
+        { name: "Nour", age: 24, city: "Tanta" }
+    ];
+
+    const tableBody = document.getElementById("tableBody");
+    const searchInput = document.getElementById("searchInput");
+    const sortNameButton = document.getElementById("sortNameButton");
+    const sortAgeButton = document.getElementById("sortAgeButton");
+    const resultMessage = document.getElementById("resultMessage");
+
+    let displayedPeople = [...people];
+
+    function displayPeople(data) {
+        tableBody.replaceChildren();
+
+        data.forEach(function (person) {
+            const row = document.createElement("tr");
+
+            const nameCell = document.createElement("td");
+            const ageCell = document.createElement("td");
+            const cityCell = document.createElement("td");
+
+            nameCell.textContent = person.name;
+            ageCell.textContent = person.age;
+            cityCell.textContent = person.city;
+
+            row.append(nameCell, ageCell, cityCell);
+            tableBody.appendChild(row);
+        });
+
+        if (data.length === 0) {
+            resultMessage.textContent = "No matching results found.";
+        } else {
+            resultMessage.textContent = "Showing " + data.length + " people.";
+        }
+    }
+
+    function searchPeople() {
+        const searchText = searchInput.value.trim().toLowerCase();
+
+        displayedPeople = people.filter(function (person) {
+            return person.name.toLowerCase().includes(searchText)
+                || String(person.age).includes(searchText)
+                || person.city.toLowerCase().includes(searchText);
+        });
+
+        displayPeople(displayedPeople);
+    }
+
+    searchInput.addEventListener("input", searchPeople);
+
+    sortNameButton.addEventListener("click", function () {
+        displayedPeople.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
+
+        displayPeople(displayedPeople);
+    });
+
+    sortAgeButton.addEventListener("click", function () {
+        displayedPeople.sort(function (a, b) {
+            return a.age - b.age;
+        });
+
+        displayPeople(displayedPeople);
+    });
+
+    displayPeople(displayedPeople);
+</script>
+
+</body>
+</html>
